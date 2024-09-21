@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.john.programming</groupId>
 	<artifactId>todo-app</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-RELEASE</version>
 	<name>todo-app</name>
 	<description>Spring Boot todo app</description>
 	<properties>
@@ -53,4 +53,14 @@
 		</plugins>
 	</build>
 
+	<distributionManagement>
+        <snapshotRepository>
+            <id>maven-nexus-repo</id>
+            <url>https://nexus.duongdx.com/repository/custom-maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>maven-nexus-repo</id>
+            <url>https://nexus.duongdx.com/repository/custom-maven-releases/</url>
+        </repository>
+    </distributionManagement>
 </project>
