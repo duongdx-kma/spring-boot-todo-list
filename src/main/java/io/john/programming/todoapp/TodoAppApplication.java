@@ -25,16 +25,6 @@ public class TodoAppApplication implements CommandLineRunner  {
 
     @Override
     public void run(String... args) throws Exception {
-
-        User user = new User();
-        user.setPassword("should be hashed");
-        user.setUsername("John");
-
-        Todo todo  = new Todo();
-        todo.setContent("Upload video to YT");
-
-        user.getTodoList().add(todo);
-
-        userRepository.save(user);
     }
 }
+
