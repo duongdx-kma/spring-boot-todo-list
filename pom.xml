@@ -15,6 +15,11 @@
 	<description>Spring Boot todo app</description>
 	<properties>
 		<java.version>11</java.version>
+		<mysql.host>${env.MYSQL_HOST}</mysql.host>
+		<mysql.port>${env.MYSQL_PORT}</mysql.port>
+		<mysql.db>${env.MYSQL_DB}</mysql.db>
+		<mysql.user>${env.MYSQL_USER}</mysql.user>
+		<mysql.password>${env.MYSQL_PASSWORD}</mysql.password>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -25,7 +30,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
