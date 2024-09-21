@@ -1,29 +1,31 @@
 ### 1. Starting command:
 ```bash
-MYSQL_HOST=192.168.63.1 \
-MYSQL_PORT=3306 \
-MYSQL_DB=duongdx_db \
-MYSQL_USER=root \
-MYSQL_PASSWORD=password \
+export MYSQL_HOST=192.168.63.1
+export MYSQL_PORT=3306
+export MYSQL_DB=duongdx_db
+export MYSQL_USER=root
+export MYSQL_PASSWORD=password
+
 java -jar todo-app.jar
 ```
 
 ### 2. Starting with `detach` mode command:
 ```bash
-mkdir -p /var/logs/todo-app/
-chmod -R 777 /var/logs/todo-app/
+sudo mkdir -p /var/log/todo-app/
+sudo chmod -R 777 /var/log/todo-app/
 
-nohup sh -c 'MYSQL_HOST=192.168.63.1 \
-            MYSQL_PORT=3306 \
-            MYSQL_DB=duongdx_db \
-            MYSQL_USER=root \
-            MYSQL_PASSWORD=password \
-            java -jar /home/deploy/spring-todo-app/target/todo-app-0.0.2-RELEASE.jar' > /var/logs/todo-app/output.log 2>&1 &
+export MYSQL_HOST=192.168.63.1
+export MYSQL_PORT=3306
+export MYSQL_DB=duongdx_db
+export MYSQL_USER=root
+export MYSQL_PASSWORD=password
+
+java -jar /home/deploy/spring-todo-app/target/todo-app-0.0.2-RELEASE.jar > /var/log/todo-app/output.log 2>&1 &
 ```
 
 ### 3. checking app log:
 ```bash
-tail -f /var/logs/todo-app/output.log
+tail -f /var/log/todo-app/output.log
 ```
 
 ### 4. Stop command:
