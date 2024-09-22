@@ -96,37 +96,44 @@ pipeline{
         stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version} ARTVERSION";
-                        nexusArtifactUploader(
-                            nexusVersion: NEXUS_VERSION,
-                            protocol: NEXUS_PROTOCOL,
-                            nexusUrl: NEXUS_URL,
-                            groupId: NEXUS_GROUP_REPO,
-                            version: ARTIFACT_VERSION,
-                            repository: RELEASE_REPO,
-                            credentialsId: NEXUS_JENKINS_CREDENTIAL,
-                            artifacts: [
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging],
-                                [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: "pom.xml",
-                                type: "pom"]
-                            ]
-                        );
+                    def pom = readMavenPom file: "pom.xml"
+                    def filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+
+                    if (filesByGlob && filesByGlob.size() > 0) {
+                        def artifactPath = filesByGlob[0].path
+                        def artifactExists = fileExists artifactPath
+
+                        if (artifactExists) {
+                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}"
+                            nexusArtifactUploader(
+                                nexusVersion: NEXUS_VERSION,
+                                protocol: NEXUS_PROTOCOL,
+                                nexusUrl: NEXUS_URL,
+                                groupId: pom.groupId, // Using the correct groupId
+                                version: ARTIFACT_VERSION,
+                                repository: RELEASE_REPO,
+                                credentialsId: NEXUS_JENKINS_CREDENTIAL,
+                                artifacts: [
+                                    [
+                                        artifactId: pom.artifactId, // Using the correct artifactId
+                                        classifier: '',
+                                        file: artifactPath,
+                                        type: pom.packaging
+                                    ],
+                                    [
+                                        artifactId: pom.artifactId,
+                                        classifier: '',
+                                        file: "pom.xml",
+                                        type: "pom"
+                                    ]
+                                ]
+                            )
+                        } else {
+                            error "*** File: ${artifactPath}, could not be found"
+                        }
+                    } else {
+                        error "*** No files matching the glob pattern were found."
                     }
-		            else {
-                        error "*** File: ${artifactPath}, could not be found";
-                    }
-                }
             }
         }
     }
