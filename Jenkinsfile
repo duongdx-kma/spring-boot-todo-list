@@ -70,26 +70,26 @@ pipeline{
         }
 
         stage('CODE ANALYSIS with SONARQUBE') {
-		  environment {
-             scannerHome = tool "${SONAR_SCANNER}"
-          }
-
-          steps {
-            withSonarQubeEnv("${SONAR_SERVER}") {
-                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=spring-boot-todo-list \
-                    -Dsonar.projectName=spring-boot-todo-list \
-                    -Dsonar.projectVersion=1.0 \
-                    -Dsonar.sources=src/ \
-                    -Dsonar.java.binaries=target/classes,target/test-classes \
-                    -Dsonar.junit.reportsPath=target/surefire-reports/ \
-                    -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+            environment {
+                scannerHome = tool "${SONAR_SCANNER}"
             }
+            // target/test-classes/io/john/programming/todoapp: is testing code
+            steps {
+                withSonarQubeEnv("${SONAR_SERVER}") {
+                    sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=spring-boot-todo-list \
+                        -Dsonar.projectName=spring-boot-todo-list \
+                        -Dsonar.projectVersion=1.0 \
+                        -Dsonar.sources=src/ \
+                        -Dsonar.java.binaries=target/classes,target/test-classes/io/john/programming/todoapp \
+                        -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                        -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                        -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                }
 
-            // config SonarQube Quality Gate
-            timeout(time: 10, unit: 'MINUTES') {
-               waitForQualityGate abortPipeline: true
-            }
+                // config SonarQube Quality Gate
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
           }
         }
 
@@ -122,7 +122,7 @@ pipeline{
                                 type: "pom"]
                             ]
                         );
-                    } 
+                    }
 		            else {
                         error "*** File: ${artifactPath}, could not be found";
                     }
