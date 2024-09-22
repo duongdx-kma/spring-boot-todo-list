@@ -134,6 +134,7 @@ pipeline{
                     } else {
                         error "*** No files matching the glob pattern were found."
                     }
+                }
             }
         }
     }
