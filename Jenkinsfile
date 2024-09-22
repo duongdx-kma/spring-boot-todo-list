@@ -13,6 +13,11 @@ pipeline{
         PROXY_REPO = "custom-maven-proxy"
         NEXUS_GROUP_REPO = "custom-maven-group"
         NEXUS_JENKINS_CREDENTIAL = "maven_login"
+        NEXUS_VERSION = 3
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = "https://nexus.duongdx.com"
+        ARTIFACT_VERSION = "${env.BUILD_ID}"
+
         SONAR_SERVER = "duongdx_sonarqube_server"
         SONAR_SCANNER = "sonarscanner6"
     }
@@ -81,11 +86,48 @@ pipeline{
                     -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
             }
 
-            // // config SonarQube Quality Gate
-            // timeout(time: 10, unit: 'MINUTES') {
-            //    waitForQualityGate abortPipeline: true
-            // }
+            // config SonarQube Quality Gate
+            timeout(time: 10, unit: 'MINUTES') {
+               waitForQualityGate abortPipeline: true
+            }
           }
+        }
+
+        stage("Publish to Nexus Repository Manager") {
+            steps {
+                script {
+                    pom = readMavenPom file: "pom.xml";
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
+                    artifactPath = filesByGlob[0].path;
+                    artifactExists = fileExists artifactPath;
+                    if(artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version} ARTVERSION";
+                        nexusArtifactUploader(
+                            nexusVersion: NEXUS_VERSION,
+                            protocol: NEXUS_PROTOCOL,
+                            nexusUrl: NEXUS_URL,
+                            groupId: NEXUS_GROUP_REPO,
+                            version: ARTIFACT_VERSION,
+                            repository: RELEASE_REPO,
+                            credentialsId: NEXUS_JENKINS_CREDENTIAL,
+                            artifacts: [
+                                [artifactId: pom.artifactId,
+                                classifier: '',
+                                file: artifactPath,
+                                type: pom.packaging],
+                                [artifactId: pom.artifactId,
+                                classifier: '',
+                                file: "pom.xml",
+                                type: "pom"]
+                            ]
+                        );
+                    } 
+		            else {
+                        error "*** File: ${artifactPath}, could not be found";
+                    }
+                }
+            }
         }
     }
 
