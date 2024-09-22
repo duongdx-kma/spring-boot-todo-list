@@ -16,6 +16,10 @@ pipeline{
         NEXUS_VERSION = 3
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "nexus.duongdx.com" // url
+
+        GROUP_ID = "io.john.programming"       // Replace with your actual groupId in `pom.xml`
+        ARTIFACT_ID = "todo-app"       // Replace with your actual artifactId in `pom.xml`
+        PACKAGING = "jar"               // Assuming your packaging in `pom.xml`
         ARTIFACT_VERSION = "${env.BUILD_ID}"
 
         SONAR_SERVER = "duongdx_sonarqube_server"
@@ -96,32 +100,32 @@ pipeline{
         stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
-                    def pom = readMavenPom file: "pom.xml"
-                    def filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+                    // Locate the built artifact
+                    def filesByGlob = findFiles(glob: "target/*.${PACKAGING}")
 
                     if (filesByGlob && filesByGlob.size() > 0) {
                         def artifactPath = filesByGlob[0].path
                         def artifactExists = fileExists artifactPath
 
                         if (artifactExists) {
-                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}"
+                            echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, version: ${ARTIFACT_VERSION}"
                             nexusArtifactUploader(
                                 nexusVersion: NEXUS_VERSION,
                                 protocol: NEXUS_PROTOCOL,
                                 nexusUrl: NEXUS_URL,
-                                groupId: pom.groupId, // Using the correct groupId
+                                groupId: GROUP_ID,
                                 version: ARTIFACT_VERSION,
                                 repository: RELEASE_REPO,
                                 credentialsId: NEXUS_JENKINS_CREDENTIAL,
                                 artifacts: [
                                     [
-                                        artifactId: pom.artifactId, // Using the correct artifactId
+                                        artifactId: ARTIFACT_ID,
                                         classifier: '',
                                         file: artifactPath,
-                                        type: pom.packaging
+                                        type: PACKAGING
                                     ],
                                     [
-                                        artifactId: pom.artifactId,
+                                        artifactId: ARTIFACT_ID,
                                         classifier: '',
                                         file: "pom.xml",
                                         type: "pom"
