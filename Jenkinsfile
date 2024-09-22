@@ -15,7 +15,7 @@ pipeline{
         NEXUS_JENKINS_CREDENTIAL = "maven_login"
         NEXUS_VERSION = 3
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "https://nexus.duongdx.com"
+        NEXUS_URL = "nexus.duongdx.com" // url
         ARTIFACT_VERSION = "${env.BUILD_ID}"
 
         SONAR_SERVER = "duongdx_sonarqube_server"
