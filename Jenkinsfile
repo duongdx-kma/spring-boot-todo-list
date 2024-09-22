@@ -14,7 +14,7 @@ pipeline{
         NEXUS_GROUP_REPO = "custom-maven-group"
         NEXUS_JENKINS_CREDENTIAL = "maven_login"
         NEXUS_VERSION = 3
-        NEXUS_PROTOCOL = "http"
+        NEXUS_PROTOCOL = "https"
         NEXUS_URL = "nexus.duongdx.com" // url
 
         GROUP_ID = "io.john.programming"       // Replace with your actual groupId in `pom.xml`
