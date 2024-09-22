@@ -61,10 +61,12 @@
 		</plugins>
 	</build>
 
-	<repository>
-      <id>${NEXUS-GROUP-REPO}</id>
-      <url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
-    </repository>
+	<repositories>
+		<repository>
+		<id>${NEXUS-GROUP-REPO}</id>
+		<url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
+		</repository>
+	</repositories>
 	<!-- <distributionManagement>
         <snapshotRepository>
             <id>maven-nexus-repo</id>
