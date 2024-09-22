@@ -28,8 +28,8 @@
 
   <mirrors>
     <mirror>
-      <id>${PROXY-REPO}</id>
-      <name>${PROXY-REPO}</name>
+      <id>${NEXUS-GROUP-REPO}</id>
+      <name>${NEXUS-GROUP-REPO}</name>
       <url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
       <mirrorOf>*</mirrorOf>
     </mirror>

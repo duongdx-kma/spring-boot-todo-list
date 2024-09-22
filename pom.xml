@@ -67,14 +67,4 @@
 		<url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
 		</repository>
 	</repositories>
-	<!-- <distributionManagement>
-        <snapshotRepository>
-            <id>maven-nexus-repo</id>
-            <url>https://nexus.duongdx.com/repository/custom-maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>maven-nexus-repo</id>
-            <url>https://nexus.duongdx.com/repository/custom-maven-releases/</url>
-        </repository>
-    </distributionManagement> -->
 </project>
