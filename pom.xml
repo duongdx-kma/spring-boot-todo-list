@@ -61,7 +61,11 @@
 		</plugins>
 	</build>
 
-	<distributionManagement>
+	<repository>
+      <id>${NEXUS-GROUP-REPO}</id>
+      <url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
+    </repository>
+	<!-- <distributionManagement>
         <snapshotRepository>
             <id>maven-nexus-repo</id>
             <url>https://nexus.duongdx.com/repository/custom-maven-snapshots/</url>
@@ -70,5 +74,5 @@
             <id>maven-nexus-repo</id>
             <url>https://nexus.duongdx.com/repository/custom-maven-releases/</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement> -->
 </project>

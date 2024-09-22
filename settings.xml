@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+
+  <servers>
+    <server>
+      <id>${SNAPSHOT-REPO}</id>
+      <username>${NEXUS-USERNAME}</username>
+      <password>${NEXUS-PASSWORD}</password>
+    </server>
+    <server>
+      <id>${RELEASE-REPO}</id>
+      <username>${NEXUS-USERNAME}</username>
+      <password>${NEXUS-PASSWORD}</password>
+    </server>
+    <server>
+      <id>${PROXY-REPO}</id>
+      <username>${NEXUS-USERNAME}</username>
+      <password>${NEXUS-PASSWORD}</password>
+    </server>
+    <server>
+      <id>${NEXUS-GROUP-REPO}</id>
+      <username>${NEXUS-USERNAME}</username>
+      <password>${NEXUS-PASSWORD}</password>
+    </server>
+  </servers>
+
+  <mirrors>
+    <mirror>
+      <id>${PROXY-REPO}</id>
+      <name>${PROXY-REPO}</name>
+      <url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+
+</settings>
