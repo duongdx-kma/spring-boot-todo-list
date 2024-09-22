@@ -21,6 +21,8 @@ pipeline{
         stage('BUILD') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'maven_login', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                    sh 'env'
+
                     sh 'mvn -s settings.xml clean install -DskipTests'
                 }
             }

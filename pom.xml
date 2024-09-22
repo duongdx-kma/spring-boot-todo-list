@@ -63,8 +63,8 @@
 
 	<repositories>
 		<repository>
-		<id>${NEXUS-GROUP-REPO}</id>
-		<url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
+		<id>${env.NEXUS_GROUP_REPO}</id>
+		<url>${env.NEXUS_DOMAIN}/repository/${env.NEXUS_GROUP_REPO}/</url>
 		</repository>
 	</repositories>
 </project>

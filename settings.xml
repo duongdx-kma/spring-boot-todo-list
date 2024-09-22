@@ -5,32 +5,32 @@
 
   <servers>
     <server>
-      <id>${SNAPSHOT-REPO}</id>
-      <username>${NEXUS-USERNAME}</username>
-      <password>${NEXUS-PASSWORD}</password>
+      <id>${env.SNAPSHOT_REPO}</id>
+      <username>${env.NEXUS_USERNAME}</username>
+      <password>${env.NEXUS_PASSWORD}</password>
     </server>
     <server>
-      <id>${RELEASE-REPO}</id>
-      <username>${NEXUS-USERNAME}</username>
-      <password>${NEXUS-PASSWORD}</password>
+      <id>${env.RELEASE_REPO}</id>
+      <username>${env.NEXUS_USERNAME}</username>
+      <password>${env.NEXUS_PASSWORD}</password>
     </server>
     <server>
-      <id>${PROXY-REPO}</id>
-      <username>${NEXUS-USERNAME}</username>
-      <password>${NEXUS-PASSWORD}</password>
+      <id>${env.PROXY_REPO}</id>
+      <username>${env.NEXUS_USERNAME}</username>
+      <password>${env.NEXUS_PASSWORD}</password>
     </server>
     <server>
-      <id>${NEXUS-GROUP-REPO}</id>
-      <username>${NEXUS-USERNAME}</username>
-      <password>${NEXUS-PASSWORD}</password>
+      <id>${env.NEXUS_GROUP_REPO}</id>
+      <username>${env.NEXUS_USERNAME}</username>
+      <password>${env.NEXUS_PASSWORD}</password>
     </server>
   </servers>
 
   <mirrors>
     <mirror>
-      <id>${NEXUS-GROUP-REPO}</id>
-      <name>${NEXUS-GROUP-REPO}</name>
-      <url>${NEXUS-DOMAIN}/repository/${NEXUS-GROUP-REPO}/</url>
+      <id>${env.NEXUS_GROUP_REPO}</id>
+      <name>${env.NEXUS_GROUP_REPO}</name>
+      <url>${env.NEXUS_DOMAIN}/repository/${env.NEXUS_GROUP_REPO}/</url>
       <mirrorOf>*</mirrorOf>
     </mirror>
   </mirrors>
