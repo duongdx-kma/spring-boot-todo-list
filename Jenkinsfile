@@ -15,7 +15,7 @@ pipeline{
         NEXUS_JENKINS_CREDENTIAL = "maven_login"
         NEXUS_VERSION = 3
         NEXUS_PROTOCOL = "https"
-        NEXUS_URL = "${env.NEXUS_DOMAIN}" // url
+        NEXUS_URL = "nexus.duongdx.com"// url
 
         GROUP_ID = "io.john.programming"       // Replace with your actual groupId in `pom.xml`
         ARTIFACT_ID = "todo-app"       // Replace with your actual artifactId in `pom.xml`
