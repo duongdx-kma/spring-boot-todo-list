@@ -154,18 +154,19 @@ pipeline{
                         def artifactPath = filesByGlob[0].path
                         def artifactExists = fileExists(artifactPath)
                         echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, repository: ${repoName}, version: ${ARTIFACT_VERSION}"
-
-                        sh '''
-                            mvn -s settings.xml deploy:deploy-file \
-                            -DgroupId=${GROUP_ID} \
-                            -DartifactId=${ARTIFACT_ID} \
-                            -Dversion=${ARTIFACT_VERSION} \
-                            -Dpackaging=jar \
-                            -Dfile=${artifactPath} \
-                            -DpomFile=pom.xml \
-                            -DrepositoryId=${repoName} \
-                            -Durl=${NEXUS_DOMAIN}/repository/${repoName}
-                        '''
+                        withCredentials([usernamePassword(credentialsId: NEXUS_JENKINS_CREDENTIAL, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                            sh '''
+                                mvn -s settings.xml deploy:deploy-file \
+                                -DgroupId=${GROUP_ID} \
+                                -DartifactId=${ARTIFACT_ID} \
+                                -Dversion=${ARTIFACT_VERSION} \
+                                -Dpackaging=jar \
+                                -Dfile=${artifactPath} \
+                                -DpomFile=pom.xml \
+                                -DrepositoryId=${repoName} \
+                                -Durl=${NEXUS_DOMAIN}/repository/${repoName}
+                            '''
+                        }
                     }
                 }
             }
