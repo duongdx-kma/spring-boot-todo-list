@@ -21,7 +21,7 @@ pipeline{
         ARTIFACT_ID = "todo-app"       // Replace with your actual artifactId in `pom.xml`
         PACKAGING = "jar"               // Assuming your packaging in `pom.xml`
         ARTIFACT_TYPE = "RELEASE"
-        ARTIFACT_VERSION = "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}-${ARTIFACT_TYPE}"
+        ARTIFACT_VERSION = "${env.BUILD_ID}-${ARTIFACT_TYPE}"
 
         SONAR_SERVER = "duongdx_sonarqube_server"
         SONAR_SCANNER = "sonarscanner6"
@@ -147,21 +147,26 @@ pipeline{
         stage('Deploy to Nexus') {
             steps {
                 script {
-                    def isSnapshot = ARTIFACT_VERSION.endsWith('-SNAPSHOT')
-                    def repoName = isSnapshot ? SNAPSHOT_REPO : RELEASE_REPO
+                    def filesByGlob = findFiles(glob: "target/*.${PACKAGING}")
+                    def repoName = ARTIFACT_TYPE == "RELEASE" ? RELEASE_REPO : SNAPSHOT_REPO
 
-                    echo "*** Uploading JAR and POM files to Nexus ***"
-                    sh '''
-                        mvn -s settings.xml deploy:deploy-file \
-                          -DgroupId=${GROUP_ID} \
-                          -DartifactId=${ARTIFACT_ID} \
-                          -Dversion=${ARTIFACT_VERSION} \
-                          -Dpackaging=jar \
-                          -Dfile=target/${ARTIFACT_ID}-${ARTIFACT_VERSION}.jar \
-                          -DpomFile=pom.xml \
-                          -DrepositoryId=${repoName} \
-                          -Durl=${NEXUS_DOMAIN}/repository/${repoName}
-                    '''
+                    if (filesByGlob && filesByGlob.size() > 0) {
+                        def artifactPath = filesByGlob[0].path
+                        def artifactExists = fileExists(artifactPath)
+                        echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, repository: ${repoName}, version: ${ARTIFACT_VERSION}"
+
+                        sh '''
+                            mvn -s settings.xml deploy:deploy-file \
+                            -DgroupId=${GROUP_ID} \
+                            -DartifactId=${ARTIFACT_ID} \
+                            -Dversion=${ARTIFACT_VERSION} \
+                            -Dpackaging=jar \
+                            -Dfile=${artifactPath} \
+                            -DpomFile=pom.xml \
+                            -DrepositoryId=${repoName} \
+                            -Durl=${NEXUS_DOMAIN}/repository/${repoName}
+                        '''
+                    }
                 }
             }
         }
