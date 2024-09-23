@@ -103,11 +103,11 @@ pipeline{
                 script {
                     // Locate the built artifact
                     def filesByGlob = findFiles(glob: "target/*.${PACKAGING}")
-                    def repoName = ${ARTIFACT_TYPE} == "RELEASE" ? ${RELEASE_REPO} : ${SNAPSHOT_REPO}
+                    def repoName = ARTIFACT_TYPE == "RELEASE" ? RELEASE_REPO : SNAPSHOT_REPO
 
                     if (filesByGlob && filesByGlob.size() > 0) {
                         def artifactPath = filesByGlob[0].path
-                        def artifactExists = fileExists artifactPath
+                        def artifactExists = fileExists(artifactPath)
 
                         if (artifactExists) {
                             echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, repository: ${repoName}, version: ${ARTIFACT_VERSION}"
