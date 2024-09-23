@@ -161,10 +161,10 @@ pipeline{
                                 -DartifactId=${ARTIFACT_ID} \
                                 -Dversion=${ARTIFACT_VERSION} \
                                 -Dpackaging=${PACKAGING} \
-                                -Dfile=${artifactPath} \
+                                -Dfile="${artifactPath}" \
                                 -DpomFile=pom.xml \
-                                -DrepositoryId=${repoName} \
-                                -Durl=${NEXUS_DOMAIN}/repository/${repoName}/
+                                -DrepositoryId="${repoName}" \
+                                -Durl=${NEXUS_DOMAIN}/repository/"${repoName}"
                             '''
                         }
                     }
