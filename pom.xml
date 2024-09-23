@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.john.programming</groupId>
 	<artifactId>todo-app</artifactId>
-	<version>0.0.3-RELEASE</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>todo-app</name>
 	<packaging>jar</packaging>
 	<description>Spring Boot todo app</description>

@@ -20,7 +20,7 @@ pipeline{
         GROUP_ID = "io.john.programming"       // Replace with your actual groupId in `pom.xml`
         ARTIFACT_ID = "todo-app"       // Replace with your actual artifactId in `pom.xml`
         PACKAGING = "jar"               // Assuming your packaging in `pom.xml`
-        ARTIFACT_TYPE = "RELEASE"
+        ARTIFACT_TYPE = "SNAPSHOT"
         ARTIFACT_VERSION = "${env.BUILD_ID}-${ARTIFACT_TYPE}"
 
         SONAR_SERVER = "duongdx_sonarqube_server"
