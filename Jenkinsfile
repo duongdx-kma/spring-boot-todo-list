@@ -21,7 +21,7 @@ pipeline{
         ARTIFACT_ID = "todo-app"       // Replace with your actual artifactId in `pom.xml`
         PACKAGING = "jar"               // Assuming your packaging in `pom.xml`
         ARTIFACT_TYPE = "RELEASE"
-        ARTIFACT_VERSION = "${env.BUILD_ID}"
+        ARTIFACT_VERSION = "${env.BUILD_ID}-${ARTIFACT_TYPE}"
 
         SONAR_SERVER = "duongdx_sonarqube_server"
         SONAR_SCANNER = "sonarscanner6"
