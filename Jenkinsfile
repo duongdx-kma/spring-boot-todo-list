@@ -118,7 +118,7 @@ pipeline{
                                 groupId: GROUP_ID,
                                 version: ARTIFACT_VERSION,
                                 repository: repoName,
-                                credentialsId: NEXUS_JENKINS_CREDENTIAL,
+                                credentialsId: "${NEXUS_JENKINS_CREDENTIAL}",
                                 artifacts: [
                                     [
                                         artifactId: ARTIFACT_ID,
