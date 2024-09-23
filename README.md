@@ -76,3 +76,58 @@ CREATE TABLE IF NOT EXISTS hibernate_sequence (
 -- Initialize the sequence table (if needed)
 INSERT INTO hibernate_sequence (next_val) VALUES (1) ON DUPLICATE KEY UPDATE next_val = next_val;
 ```
+
+### 6. trying push nexus artifact using `maven`:
+
+#### 6.1 export necessary variables
+```bash
+#export NEXUS_USERNAME="your_nexus_username"
+#export NEXUS_PASSWORD="your_nexus_password"
+
+export NEXUS_DOMAIN="https://nexus.duongdx.com"
+export SNAPSHOT_REPO="custom-maven-snapshots"
+export RELEASE_REPO="custom-maven-releases"
+export PROXY_REPO="custom-maven-proxy"
+export NEXUS_GROUP_REPO="custom-maven-group"
+export GROUP_ID="io.john.programming"
+export ARTIFACT_ID="todo-app"
+export ARTIFACT_VERSION="0.0.3-RELEASE"
+export IS_SNAPSHOT=false  # Set to true if deploying a snapshot version
+```
+
+#### 6.2 install and package artifacts:
+```bash
+mvn -s settings.xml clean install -DskipTests
+```
+
+#### 6.3 publish artifacts to `RELEASE` repo: `.jar` and `pom` file
+```bash
+# must set (before 6.2)
+export ARTIFACT_VERSION="0.0.3-RELEASE"
+
+mvn -s settings.xml deploy:deploy-file \
+  -DgroupId=${GROUP_ID} \
+  -DartifactId=${ARTIFACT_ID} \
+  -Dversion=${ARTIFACT_VERSION} \
+  -Dpackaging=jar \
+  -Dfile=target/${ARTIFACT_ID}-${ARTIFACT_VERSION}.jar \
+  -DpomFile=pom.xml \
+  -DrepositoryId=${RELEASE_REPO} \
+  -Durl=${NEXUS_DOMAIN}/repository/${RELEASE_REPO}
+```
+
+#### 6.4 publish artifacts to `SNAPSHOT` repo: `.jar` and `pom` file
+```bash
+# must set (before 6.2)
+export ARTIFACT_VERSION="0.0.3-SNAPSHOT"
+
+mvn -s settings.xml deploy:deploy-file \
+  -DgroupId=${GROUP_ID} \
+  -DartifactId=${ARTIFACT_ID} \
+  -Dversion=${ARTIFACT_VERSION} \
+  -Dpackaging=jar \
+  -Dfile=target/${ARTIFACT_ID}-${ARTIFACT_VERSION}.jar \
+  -DpomFile=pom.xml \
+  -DrepositoryId=${SNAPSHOT_REPO} \
+  -Durl=${NEXUS_DOMAIN}/repository/${SNAPSHOT_REPO}
+```

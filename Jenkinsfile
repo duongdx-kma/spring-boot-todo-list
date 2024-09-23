@@ -15,54 +15,55 @@ pipeline{
         NEXUS_JENKINS_CREDENTIAL = "maven_login"
         NEXUS_VERSION = 3
         NEXUS_PROTOCOL = "https"
-        NEXUS_URL = "nexus.duongdx.com" // url
+        NEXUS_URL = "${env.NEXUS_DOMAIN}" // url
 
         GROUP_ID = "io.john.programming"       // Replace with your actual groupId in `pom.xml`
         ARTIFACT_ID = "todo-app"       // Replace with your actual artifactId in `pom.xml`
         PACKAGING = "jar"               // Assuming your packaging in `pom.xml`
+        ARTIFACT_TYPE = "RELEASE"
         ARTIFACT_VERSION = "${env.BUILD_ID}"
 
         SONAR_SERVER = "duongdx_sonarqube_server"
         SONAR_SCANNER = "sonarscanner6"
     }
 
-    stages{
+    stages {
         stage('BUILD') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'maven_login', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: NEXUS_JENKINS_CREDENTIAL, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     sh 'env'
 
                     sh 'mvn -s settings.xml clean install -DskipTests'
                 }
             }
-            // post {
-            //     success {
-            //         echo 'Now Archiving...'
-            //         archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
-            //         stash name: 'app-war', includes: '**/target/*.war' // save the artifact for Deploy State
-            //     }
-            // }
+            post {
+                success {
+                    echo 'Now Archiving...'
+                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                    stash name: 'app-jar', includes: '**/target/*.jar' // save the artifact for Deploy State
+                }
+            }
         }
 
-        stage('UNIT TEST'){
+        stage('UNIT TEST') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'maven_login', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: NEXUS_JENKINS_CREDENTIAL, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     sh 'mvn -s settings.xml test'
                 }
             }
         }
 
-        stage('INTEGRATION TEST'){
+        stage('INTEGRATION TEST') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'maven_login', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: NEXUS_JENKINS_CREDENTIAL, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     sh 'mvn -s settings.xml verify -DskipUnitTests'
                 }
             }
         }
 		
-        stage ('CODE ANALYSIS WITH CHECKSTYLE'){
+        stage ('CODE ANALYSIS WITH CHECKSTYLE') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'maven_login', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: NEXUS_JENKINS_CREDENTIAL, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
                     sh 'mvn -s settings.xml checkstyle:checkstyle'
                 }
             }
@@ -102,20 +103,21 @@ pipeline{
                 script {
                     // Locate the built artifact
                     def filesByGlob = findFiles(glob: "target/*.${PACKAGING}")
+                    def repoName = ${ARTIFACT_TYPE} == "RELEASE" ? ${RELEASE_REPO} : ${SNAPSHOT_REPO}
 
                     if (filesByGlob && filesByGlob.size() > 0) {
                         def artifactPath = filesByGlob[0].path
                         def artifactExists = fileExists artifactPath
 
                         if (artifactExists) {
-                            echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, version: ${ARTIFACT_VERSION}"
+                            echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, repository: ${repoName}, version: ${ARTIFACT_VERSION}"
                             nexusArtifactUploader(
                                 nexusVersion: NEXUS_VERSION,
                                 protocol: NEXUS_PROTOCOL,
                                 nexusUrl: NEXUS_URL,
                                 groupId: GROUP_ID,
                                 version: ARTIFACT_VERSION,
-                                repository: RELEASE_REPO,
+                                repository: repoName,
                                 credentialsId: NEXUS_JENKINS_CREDENTIAL,
                                 artifacts: [
                                     [
