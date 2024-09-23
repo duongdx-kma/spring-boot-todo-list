@@ -21,7 +21,7 @@ pipeline{
         ARTIFACT_ID = "todo-app"       // Replace with your actual artifactId in `pom.xml`
         PACKAGING = "jar"               // Assuming your packaging in `pom.xml`
         ARTIFACT_TYPE = "RELEASE"
-        ARTIFACT_VERSION = "${env.BUILD_ID}-${ARTIFACT_TYPE}"
+        ARTIFACT_VERSION = "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}-${ARTIFACT_TYPE}"
 
         SONAR_SERVER = "duongdx_sonarqube_server"
         SONAR_SCANNER = "sonarscanner6"
@@ -98,48 +98,70 @@ pipeline{
           }
         }
 
-        stage("Publish to Nexus Repository Manager") {
+        // stage("Publish to Nexus Repository Manager") {
+        //     steps {
+        //         script {
+        //             // Locate the built artifact
+        //             def filesByGlob = findFiles(glob: "target/*.${PACKAGING}")
+        //             def repoName = ARTIFACT_TYPE == "RELEASE" ? RELEASE_REPO : SNAPSHOT_REPO
+
+        //             if (filesByGlob && filesByGlob.size() > 0) {
+        //                 def artifactPath = filesByGlob[0].path
+        //                 def artifactExists = fileExists(artifactPath)
+
+        //                 if (artifactExists) {
+        //                     echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, repository: ${repoName}, version: ${ARTIFACT_VERSION}"
+        //                     nexusArtifactUploader(
+        //                         nexusVersion: NEXUS_VERSION,
+        //                         protocol: NEXUS_PROTOCOL,
+        //                         nexusUrl: NEXUS_URL,
+        //                         groupId: GROUP_ID,
+        //                         version: ARTIFACT_VERSION,
+        //                         repository: repoName,
+        //                         credentialsId: "${NEXUS_JENKINS_CREDENTIAL}",
+        //                         artifacts: [
+        //                             [
+        //                                 artifactId: ARTIFACT_ID,
+        //                                 classifier: '',
+        //                                 file: artifactPath,
+        //                                 type: PACKAGING
+        //                             ],
+        //                             [
+        //                                 artifactId: ARTIFACT_ID,
+        //                                 classifier: '',
+        //                                 file: "pom.xml",
+        //                                 type: "pom"
+        //                             ]
+        //                         ]
+        //                     )
+        //                 } else {
+        //                     error "*** File: ${artifactPath}, could not be found"
+        //                 }
+        //             } else {
+        //                 error "*** No files matching the glob pattern were found."
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Deploy to Nexus') {
             steps {
                 script {
-                    // Locate the built artifact
-                    def filesByGlob = findFiles(glob: "target/*.${PACKAGING}")
-                    def repoName = ARTIFACT_TYPE == "RELEASE" ? RELEASE_REPO : SNAPSHOT_REPO
+                    def isSnapshot = ARTIFACT_VERSION.endsWith('-SNAPSHOT')
+                    def repoName = isSnapshot ? SNAPSHOT_REPO : RELEASE_REPO
 
-                    if (filesByGlob && filesByGlob.size() > 0) {
-                        def artifactPath = filesByGlob[0].path
-                        def artifactExists = fileExists(artifactPath)
-
-                        if (artifactExists) {
-                            echo "*** File: ${artifactPath}, group: ${GROUP_ID}, packaging: ${PACKAGING}, repository: ${repoName}, version: ${ARTIFACT_VERSION}"
-                            nexusArtifactUploader(
-                                nexusVersion: NEXUS_VERSION,
-                                protocol: NEXUS_PROTOCOL,
-                                nexusUrl: NEXUS_URL,
-                                groupId: GROUP_ID,
-                                version: ARTIFACT_VERSION,
-                                repository: repoName,
-                                credentialsId: "${NEXUS_JENKINS_CREDENTIAL}",
-                                artifacts: [
-                                    [
-                                        artifactId: ARTIFACT_ID,
-                                        classifier: '',
-                                        file: artifactPath,
-                                        type: PACKAGING
-                                    ],
-                                    [
-                                        artifactId: ARTIFACT_ID,
-                                        classifier: '',
-                                        file: "pom.xml",
-                                        type: "pom"
-                                    ]
-                                ]
-                            )
-                        } else {
-                            error "*** File: ${artifactPath}, could not be found"
-                        }
-                    } else {
-                        error "*** No files matching the glob pattern were found."
-                    }
+                    echo "*** Uploading JAR and POM files to Nexus ***"
+                    sh '''
+                        mvn -s settings.xml deploy:deploy-file \
+                          -DgroupId=${GROUP_ID} \
+                          -DartifactId=${ARTIFACT_ID} \
+                          -Dversion=${ARTIFACT_VERSION} \
+                          -Dpackaging=jar \
+                          -Dfile=target/${ARTIFACT_ID}-${ARTIFACT_VERSION}.jar \
+                          -DpomFile=pom.xml \
+                          -DrepositoryId=${repoName} \
+                          -Durl=${NEXUS_DOMAIN}/repository/${repoName}
+                    '''
                 }
             }
         }
