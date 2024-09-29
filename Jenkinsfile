@@ -58,14 +58,16 @@ pipeline{
             steps{
                 // Output captured values
                 // echo "All: ${payload}"
-                echo "ref: ${ref}"
-                echo "GitHub Event: ${github_event}"
-                echo "Pull Request Action: ${pr_action}"
-                echo "Pull Request Number: ${pr_number}"
-                echo "Repository Name: ${repo_name}"
-                echo "Head Branch: ${pr_head_branch}"
-                echo "Base Branch: ${pr_base_branch}"
-                echo "Commit SHA: ${pr_commit_sha}"
+                sh '''
+                    echo ref: ${ref}
+                    echo GitHub Event: ${github_event}
+                    echo Pull Request Action: ${pr_action}
+                    echo Pull Request Number: ${pr_number}
+                    echo Repository Name: ${repo_name}
+                    echo Head Branch: ${pr_head_branch}
+                    echo Base Branch: ${pr_base_branch}
+                    echo Commit SHA: ${pr_commit_sha}
+                '''
             }
         }
 
