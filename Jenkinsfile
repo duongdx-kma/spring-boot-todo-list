@@ -39,7 +39,7 @@ pipeline{
                 [key: 'repo_name', value: '$.repository.full_name'], // Extract repository name
                 [key: 'repo_url', value: '$.repository.html_url'] // Extract repo URL
             ],
-            genericRequestVariables: [
+            genericHeaderVariables: [
                 [key: 'github_event', expressionType: 'header', value: 'X-GitHub-Event'], // Extract event type
                 [key: 'github_delivery', expressionType: 'header', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
             ],
