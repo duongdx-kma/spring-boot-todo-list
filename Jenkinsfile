@@ -31,20 +31,19 @@ pipeline{
         GenericTrigger(
             genericVariables: [
                 // [key: 'payload', value: '$'], // Extract all variable from payload
-                [key: 'ref', value: '$.pull_request.head.ref'],
-                [key: 'pr_action', value: '$.action'], // Extract action from payload
-                [key: 'pr_number', value: '$.pull_request.number'], // Extract PR number
-                [key: 'pr_head_branch', value: '$.pull_request.head.ref'], // Extract source branch
-                [key: 'pr_base_branch', value: '$.pull_request.base.ref'], // Extract target branch
-                [key: 'pr_commit_sha', value: '$.pull_request.head.sha'], // Extract commit SHA
-                [key: 'repo_name', value: '$.repository.full_name'], // Extract repository name
-                [key: 'repo_url', value: '$.repository.html_url'] // Extract repo URL
+                [key: 'pr_action', value: '$.action', defaultValue: ''], // Extract action from payload
+                [key: 'pr_number', value: '$.pull_request.number', defaultValue: ''], // Extract PR number
+                [key: 'pr_head_branch', value: '$.pull_request.head.ref', defaultValue: ''], // Extract source branch
+                [key: 'pr_base_branch', value: '$.pull_request.base.ref', defaultValue: ''], // Extract target branch
+                [key: 'pr_commit_sha', value: '$.pull_request.head.sha', defaultValue: ''], // Extract commit SHA
+                [key: 'repo_name', value: '$.repository.full_name', defaultValue: ''], // Extract repository name
+                [key: 'repo_url', value: '$.repository.html_url', defaultValue: ''] // Extract repo URL
             ],
             genericHeaderVariables: [
-                [key: 'github_event', value: 'X-GitHub-Event'], // Extract event type
-                [key: 'github_delivery', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
+                [key: 'github_event', value: 'X-GitHub-Event', defaultValue: ''], // Extract event type
+                [key: 'github_delivery', value: 'X-GitHub-Delivery', defaultValue: ''] // Extract unique delivery ID
             ],
-            causeString: 'Triggered on $ref',
+            causeString: 'Triggered on $pr_head_branch',
             token: 'secret_token', // Correct usage of the token here
             printContributedVariables: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             printPostContent: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
@@ -59,7 +58,6 @@ pipeline{
                 // Output captured values
                 // echo "All: ${payload}"
                 sh """
-                    echo ref: $ref
                     echo GitHub Event: $github_event
                     echo Pull Request Action: $pr_action
                     echo Pull Request Number: $pr_number
