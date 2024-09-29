@@ -39,10 +39,6 @@ pipeline{
                 [key: 'repo_name', value: '$.repository.full_name', defaultValue: ''], // Extract repository name
                 [key: 'repo_url', value: '$.repository.html_url', defaultValue: ''] // Extract repo URL
             ],
-            genericRequestVariables: [
-                [key: 'github_event', value: 'X-GitHub-Event', defaultValue: ''], // Extract event type
-                [key: 'github_delivery', value: 'X-GitHub-Delivery', defaultValue: ''] // Extract unique delivery ID
-            ],
             causeString: 'Triggered on $pr_head_branch',
             token: 'secret_token', // Correct usage of the token here
             printContributedVariables: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
@@ -58,7 +54,6 @@ pipeline{
                 // Output captured values
                 // echo "All: ${payload}"
                 sh """
-                    echo GitHub Event: $github_event
                     echo Pull Request Action: $pr_action
                     echo Pull Request Number: $pr_number
                     echo Repository Name: $repo_name
