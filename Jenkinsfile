@@ -28,7 +28,7 @@ pipeline{
     }
 
     triggers {
-        genericTrigger(
+        GenericTrigger(
             genericVariables: [
                 [key: 'pr_variables', value: '$'], // Extract all variable from payload
                 [key: 'pr_action', value: '$.action'], // Extract action from payload
