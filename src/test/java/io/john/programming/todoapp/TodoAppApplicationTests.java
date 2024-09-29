@@ -28,7 +28,7 @@ class TodoAppApplicationTests {
     @Test
     void healthCheck_ReturnsHealthyStatus() throws Exception {
         // Simulate an HTTP GET request to the /health-check endpoint and verify the response
-        mockMvc.perform(get("/health-check"))
+        mockMvc.perform(get("/api/health-check"))
                 .andExpect(status().isOk())  // Expect HTTP 200 OK status
                 .andExpect(jsonPath("$.status").value("healthy"));  // Expect JSON response {"status": "healthy"}
     }
