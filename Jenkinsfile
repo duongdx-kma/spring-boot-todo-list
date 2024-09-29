@@ -40,10 +40,10 @@ pipeline{
                 [key: 'repo_url', value: '$.repository.html_url'] // Extract repo URL
             ],
             genericHeaderVariables: [
-                [key: 'github_event', expressionType: 'header', value: 'X-GitHub-Event'], // Extract event type
-                [key: 'github_delivery', expressionType: 'header', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
+                [key: 'github_event', value: 'X-GitHub-Event'], // Extract event type
+                [key: 'github_delivery', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
             ],
-            causeString: 'Triggered on $github_event',
+            causeString: "Triggered on $github_event",
             token: 'secret_token', // Correct usage of the token here
             printContributedVariables: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             printPostContent: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
