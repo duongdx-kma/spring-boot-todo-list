@@ -41,7 +41,7 @@ pipeline{
             genericRequestVariables: [
                 [key: 'github_event', expressionType: 'header', value: 'X-GitHub-Event'], // Extract event type
                 [key: 'github_delivery', expressionType: 'header', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
-            ]
+            ],
             causeString: 'Triggered on $github_event',
             token: 'secret_token', // Correct usage of the token here
             printContributedVariables: true,
