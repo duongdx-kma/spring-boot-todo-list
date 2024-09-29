@@ -27,7 +27,42 @@ pipeline{
         SONAR_SCANNER = "sonarscanner6"
     }
 
+    triggers {
+        genericTrigger(
+            genericVariables: [
+                [key: 'pr_action', value: '$.action'], // Extract action from payload
+                [key: 'pr_number', value: '$.pull_request.number'], // Extract PR number
+                [key: 'pr_head_branch', value: '$.pull_request.head.ref'], // Extract source branch
+                [key: 'pr_base_branch', value: '$.pull_request.base.ref'], // Extract target branch
+                [key: 'pr_commit_sha', value: '$.pull_request.head.sha'], // Extract commit SHA
+                [key: 'repo_name', value: '$.repository.full_name'], // Extract repository name
+                [key: 'repo_url', value: '$.repository.html_url'] // Extract repo URL
+            ],
+            genericRequestVariables: [
+                [key: 'github_event', expressionType: 'header', value: 'X-GitHub-Event'], // Extract event type
+                [key: 'github_delivery', expressionType: 'header', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
+            ]
+            causeString: 'Triggered by GitHub PR #${pull_request_number}',
+            token: 'secret_token', // Make sure to add this token to the GitHub webhook settings
+            printContributedVariables: true,
+            printPostContent: true,
+            // regexpFilterText: '$action:$is_merged',
+            // regexpFilterExpression: '(opened|synchronize):false' // Trigger only on PR open or update events, but not on merge
+        )
+    }
+
     stages {
+        stage('Verify trigger variable') {
+            // Output captured values
+            echo "GitHub Event: ${github_event}"
+            echo "Pull Request Action: ${pr_action}"
+            echo "Pull Request Number: ${pr_number}"
+            echo "Repository Name: ${repo_name}"
+            echo "Head Branch: ${pr_head_branch}"
+            echo "Base Branch: ${pr_base_branch}"
+            echo "Commit SHA: ${pr_commit_sha}"
+        }
+
         stage('BUILD') {
             steps {
                 withCredentials([usernamePassword(credentialsId: NEXUS_JENKINS_CREDENTIAL, usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
