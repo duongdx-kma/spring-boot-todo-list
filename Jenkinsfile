@@ -42,7 +42,7 @@ pipeline{
                 [key: 'github_event', expressionType: 'header', value: 'X-GitHub-Event'], // Extract event type
                 [key: 'github_delivery', expressionType: 'header', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
             ]
-            causeString: 'Triggered by GitHub PR #${pull_request_number}',
+            // causeString: 'Triggered by GitHub PR #${pull_request_number}',
             token: 'secret_token', // Make sure to add this token to the GitHub webhook settings
             printContributedVariables: true,
             printPostContent: true,
