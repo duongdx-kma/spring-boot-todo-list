@@ -48,8 +48,8 @@ pipeline{
             token: 'secret_token', // Correct usage of the token here
             printContributedVariables: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             printPostContent: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
-            regexpFilterText: '$ref',
-            regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
+            regexpFilterText: '$pr_action',
+            regexpFilterExpression: 'opened|synchronize|closed' // Trigger for opened, synchronized, or closed actions
         )
     }
 
