@@ -30,7 +30,8 @@ pipeline{
     triggers {
         GenericTrigger(
             genericVariables: [
-                // [key: 'payload', value: '$'], // Extract all variable from payload
+                [key: 'payload', value: '$'], // Extract all variable from payload
+                [key: 'ref', value: '$.ref'],
                 [key: 'pr_action', value: '$.action'], // Extract action from payload
                 [key: 'pr_number', value: '$.pull_request.number'], // Extract PR number
                 [key: 'pr_head_branch', value: '$.pull_request.head.ref'], // Extract source branch
@@ -43,12 +44,12 @@ pipeline{
                 [key: 'github_event', value: 'X-GitHub-Event'], // Extract event type
                 [key: 'github_delivery', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
             ],
-            causeString: "Triggered on $github_event",
+            causeString: 'Triggered on $ref',
             token: 'secret_token', // Correct usage of the token here
             printContributedVariables: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             printPostContent: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
-            regexpFilterExpression: '',
-            regexpFilterText: ''
+            regexpFilterText: '$ref',
+            regexpFilterExpression: 'refs/heads/' + BRANCH_NAME
         )
     }
 
@@ -56,7 +57,8 @@ pipeline{
         stage('Verify trigger variable') {
             steps{
                 // Output captured values
-                // echo "All: ${payload}"
+                echo "All: ${payload}"
+                echo "ref: ${ref}"
                 echo "GitHub Event: ${github_event}"
                 echo "Pull Request Action: ${pr_action}"
                 echo "Pull Request Number: ${pr_number}"
