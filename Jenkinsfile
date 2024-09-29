@@ -49,7 +49,7 @@ pipeline{
             printContributedVariables: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             printPostContent: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             regexpFilterText: '$pr_action',
-            regexpFilterExpression: 'opened|synchronize|closed' // Trigger for opened, synchronized, or closed actions
+            // regexpFilterExpression: 'opened|synchronize|closed' // Trigger for opened, synchronized, or closed actions
         )
     }
 
