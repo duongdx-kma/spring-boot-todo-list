@@ -31,7 +31,7 @@ pipeline{
         GenericTrigger(
             genericVariables: [
                 // [key: 'payload', value: '$'], // Extract all variable from payload
-                [key: 'ref', value: '$.ref'],
+                [key: 'ref', value: '$.head.ref'],
                 [key: 'pr_action', value: '$.action'], // Extract action from payload
                 [key: 'pr_number', value: '$.pull_request.number'], // Extract PR number
                 [key: 'pr_head_branch', value: '$.pull_request.head.ref'], // Extract source branch
@@ -49,7 +49,7 @@ pipeline{
             printContributedVariables: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             printPostContent: true, // These flags are set to true to ensure that you see all available variables in the Jenkins console.
             regexpFilterText: '$pr_action',
-            regexpFilterExpression: 'opened|synchronize|closed' // Trigger for opened, synchronized, or closed actions
+            regexpFilterExpression: 'opened|synchronize|closed|merged', // Trigger for opened, synchronized, or closed actions
         )
     }
 
