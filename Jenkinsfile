@@ -30,6 +30,7 @@ pipeline{
     triggers {
         genericTrigger(
             genericVariables: [
+                [key: 'pr_variables', value: '$'], // Extract all variable from payload
                 [key: 'pr_action', value: '$.action'], // Extract action from payload
                 [key: 'pr_number', value: '$.pull_request.number'], // Extract PR number
                 [key: 'pr_head_branch', value: '$.pull_request.head.ref'], // Extract source branch
@@ -53,14 +54,17 @@ pipeline{
 
     stages {
         stage('Verify trigger variable') {
-            // Output captured values
-            echo "GitHub Event: ${github_event}"
-            echo "Pull Request Action: ${pr_action}"
-            echo "Pull Request Number: ${pr_number}"
-            echo "Repository Name: ${repo_name}"
-            echo "Head Branch: ${pr_head_branch}"
-            echo "Base Branch: ${pr_base_branch}"
-            echo "Commit SHA: ${pr_commit_sha}"
+            steps{
+                // Output captured values
+                echo "All: ${pr_variables}"
+                echo "GitHub Event: ${github_event}"
+                echo "Pull Request Action: ${pr_action}"
+                echo "Pull Request Number: ${pr_number}"
+                echo "Repository Name: ${repo_name}"
+                echo "Head Branch: ${pr_head_branch}"
+                echo "Base Branch: ${pr_base_branch}"
+                echo "Commit SHA: ${pr_commit_sha}"
+            }
         }
 
         stage('BUILD') {
