@@ -42,12 +42,12 @@ pipeline{
                 [key: 'github_event', expressionType: 'header', value: 'X-GitHub-Event'], // Extract event type
                 [key: 'github_delivery', expressionType: 'header', value: 'X-GitHub-Delivery'] // Extract unique delivery ID
             ]
-            // causeString: 'Triggered by GitHub PR #${pull_request_number}',
-            token: 'secret_token', // Make sure to add this token to the GitHub webhook settings
+            causeString: 'Triggered on $github_event',
+            token: 'secret_token', // Correct usage of the token here
             printContributedVariables: true,
             printPostContent: true,
-            // regexpFilterText: '$action:$is_merged',
-            // regexpFilterExpression: '(opened|synchronize):false' // Trigger only on PR open or update events, but not on merge
+            regexpFilterExpression: '',
+            regexpFilterText: ''
         )
     }
 
