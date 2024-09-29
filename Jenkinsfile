@@ -60,7 +60,6 @@ pipeline{
                     echo Head Branch: $pr_head_branch
                     echo Base Branch: $pr_base_branch
                     echo Commit SHA: $pr_commit_sha
-                    echo PR Merged: $pr_merged
                 """
             }
         }
